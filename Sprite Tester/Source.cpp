@@ -2,6 +2,7 @@
 #include <allegro5\allegro_image.h>
 #include "Sprite.h"
 #include <iostream>
+#include <allegro5/allegro_primitives.h>
 using namespace std;
 
 int main(void)
@@ -35,6 +36,7 @@ int main(void)
 	//addon init
 	al_install_keyboard();
 	al_init_image_addon();
+	al_init_primitives_addon();
 	timer = al_create_timer(1.0 / FPS);
 
 	event_queue = al_create_event_queue();
@@ -45,7 +47,7 @@ int main(void)
 	srand(time(NULL));
 
 	for (int i = 0; i < numSprites; i++) {
-		banana[i].load_animated_sprite(8);
+		banana[i].load_animated_sprite(8, width, height);
 	}
 
 	while(!done)

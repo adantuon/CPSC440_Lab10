@@ -4,11 +4,12 @@ public:
 	~sprite();
 	void updatesprite(int WIDTH, int HEIGHT);
 	void bouncesprite(int SCREEN_W, int SCREEN_H);
-	void load_animated_sprite(int size);
+	void load_animated_sprite(int size, int WIDTH, int HEIGHT);
 	void drawSprite();
 	int getX(){return x;}
 	int getY(){return y;}
 	void collision(sprite sprites[], int numSprites, int currIndex, int WIDTH, int HEIGHT);
+	bool isDead() { return dead; }
 
 private:
 	int x,y;
