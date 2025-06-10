@@ -42,12 +42,11 @@ int main(void)
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 	al_set_target_bitmap(al_get_backbuffer(display));
 	al_start_timer(timer);
+	srand(time(NULL));
 
 	for (int i = 0; i < numSprites; i++) {
 		banana[i].load_animated_sprite(8);
 	}
-	
-	srand(time(NULL));
 
 	while(!done)
 	{
@@ -96,7 +95,7 @@ int main(void)
 
 			redraw = false; 
 			for (int i = 0; i < numSprites; i++) {
-				banana[i].updatesprite();
+				banana[i].updatesprite(width, height);
 			}
 
 			for (int i = 0; i < numSprites; i++) {

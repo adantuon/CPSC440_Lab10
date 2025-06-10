@@ -2,7 +2,7 @@ class sprite
 {
 public: 
 	~sprite();
-	void updatesprite();
+	void updatesprite(int WIDTH, int HEIGHT);
 	void bouncesprite(int SCREEN_W, int SCREEN_H);
 	void load_animated_sprite(int size);
 	void drawSprite();
@@ -23,6 +23,7 @@ private:
 	ALLEGRO_COLOR tint;
 	bool dead;
 	float scale;
+	bool frozen;
 	int frames;
 	bool collided;
 	ALLEGRO_BITMAP *image[8];

@@ -10,7 +10,7 @@ void sprite::drawSprite()
 {
 	//If Spinning
 	if (power[0]) {
-		al_draw_rotated_bitmap(image[curframe], 32, 32, x, y, angle, 0);
+		al_draw_rotated_bitmap(image[curframe], 32, 32, x, y, angle * 2 * ALLEGRO_PI, 0);
 	}
 
 	//If Scared
@@ -29,9 +29,14 @@ void sprite::drawSprite()
 	}
 }
 
-void sprite::updatesprite()
+void sprite::updatesprite(int WIDTH, int HEIGHT)
 {
-	if (!dead) {
+	if (!dead  && !frozen) {
+		if (collided && (power[1] || power[2])) {
+			x = rand() % WIDTH;
+			y = rand() % HEIGHT;
+		}
+
 		//update x position
 		if (++xcount > xdelay)
 		{
@@ -55,6 +60,22 @@ void sprite::updatesprite()
 				curframe = 0;
 		}
 	}
+	frames++;
+
+	if (frozen && frames > 300) {
+		frozen = false;
+	}
+
+	if (!dead && scale < 1.0 && frames > 600) {
+		scale = 1.0;
+	}
+
+	angle += 0.01;
+
+	if (angle > 1.0) {
+		angle -= 1.0;
+	}
+
 }
 
 void sprite::bouncesprite(int SCREEN_W, int SCREEN_H)
@@ -112,6 +133,7 @@ void sprite::load_animated_sprite(int size)
 	tint = al_map_rgb(255, 255, 255);
 	dead = false;
 	scale = 1.0;
+	frozen = false;
 	frames = 0;
 	collided = false;
 
@@ -124,12 +146,14 @@ sprite::~sprite()
 }
 
 void sprite::collision(sprite sprites[], int numSprites, int currIndex, int WIDTH, int HEIGHT) {
-	if (!dead) {
+	if (!dead && !frozen) {
 		for (int i = 0; i < numSprites; i++) {
 			if (i != currIndex) {
 				if ((x >= sprites[i].getX() - width && x <= sprites[i].getX() + width) &&
 					(y >= sprites[i].getY() - height && y <= sprites[i].getY() + height))
 				{
+					frames = 0;
+
 					//If Spinning
 					if (power[0]) {
 
@@ -137,8 +161,6 @@ void sprite::collision(sprite sprites[], int numSprites, int currIndex, int WIDT
 
 					//If Scared or Baby
 					else if (power[1] || power[2]) {
-						x = rand() % WIDTH;
-						y = rand() % HEIGHT;
 						if (power[1]) {
 							tint = al_map_rgb(rand() / 256, rand() / 256, rand() / 256);
 						}
@@ -153,7 +175,7 @@ void sprite::collision(sprite sprites[], int numSprites, int currIndex, int WIDT
 
 					//If Freeze
 					else if (power[3]) {
-
+						frozen = true;
 					}
 
 					collided = true;
