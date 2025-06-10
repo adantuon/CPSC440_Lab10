@@ -14,13 +14,37 @@ void sprite::drawSprite()
 
 void sprite::updatesprite(int WIDTH, int HEIGHT)
 {
-	if (!dead  && !frozen) {
-		//If collision and power teleports on collision, then teleport
-		if (collided && (power[1] || power[2])) {
+
+	//If collision
+	if (collided) {
+		//Scared and Baby Teleport
+		if (power[1] || power[2]) {
 			x = (rand() % (WIDTH - width + 1)) + width / 2;
 			y = (rand() % (HEIGHT - height + 1)) + height / 2;
+
+			//Scared Tinting
+			if (power[1]) {
+				tint = al_map_rgb(rand() / 256, rand() / 256, rand() / 256);
+			}
+
+			//Baby Scaling
+			else if (power[2]) {
+				scale /= 2;
+				if ((int)(64 * scale) == 0) {
+					printf("Sprite Died\n");
+					dead = true;
+				}
+			}
+		}
+		//Freeze
+		else if (power[3]) {
+			frozen = true;
 		}
 
+		collided = false;
+	}		
+
+	if (!dead  && !frozen) {
 		//update x position
 		if (++xcount > xdelay)
 		{
@@ -167,31 +191,10 @@ void sprite::collision(sprite sprites[], int numSprites, int currIndex, int WIDT
 				{
 					frames = 0;
 
-					//If Scared or Baby
-					if (power[1] || power[2]) {
-						if (power[1]) {
-							tint = al_map_rgb(rand() / 256, rand() / 256, rand() / 256);
-						}
-						else {
-							scale /= 2;
-							if ((int)(64 * scale) == 0) {
-								printf("Sprite Died\n");
-								dead = true;
-							}
-						}
-					}
-
-					//If Freeze
-					else if (power[3]) {
-						frozen = true;
-					}
-
 					collided = true;
-					return;
 				}
 			}
 		}
-		collided = false;
 	}
 }
 
