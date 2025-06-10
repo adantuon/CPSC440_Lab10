@@ -15,6 +15,10 @@ void sprite::drawSprite()
 
 	//If Scared
 	else if (power[1]) {
+		if (collided) {
+			tint = al_map_rgb(rand() / 256, rand() / 256, rand() / 256);
+			collided = false;
+		}
 		al_draw_tinted_bitmap(image[curframe], tint, x, y, 0);
 	}
 
