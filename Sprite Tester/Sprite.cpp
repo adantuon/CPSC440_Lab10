@@ -8,7 +8,30 @@ using namespace std;
 
 void sprite::drawSprite()
 {
-	al_draw_bitmap(image[curframe],x,y,0);
+	//If Spinning
+	if (power[0]) {
+		al_draw_rotated_bitmap(image[curframe], 32, 32, x, y, angle, 0);
+	}
+
+	//If Scared
+	else if (power[1]) {
+		al_draw_tinted_bitmap(image[curframe], tint, x, y, 0);
+	}
+
+	//If Baby
+	else if (power[2]) {
+		al_draw_scaled_bitmap(image[curframe], 0, 0, 64, 64, x, y, 64 * scale, 64 * scale, 0);
+	}
+
+	//If Freeze
+	else if (power[3]) {
+		al_draw_bitmap(image[curframe], x, y, 0);
+	}
+
+	//Default Just In Case
+	else {
+		al_draw_bitmap(image[curframe], x, y, 0);
+	}
 }
 
 void sprite::updatesprite()
@@ -87,7 +110,11 @@ void sprite::load_animated_sprite(int size)
 	curframe = 0;
 	framedelay = 5;
 	framecount = 0;
-
+	power[rand() % 4] = true;
+	angle = 0.0;
+	tint = al_map_rgb(255, 255, 255);
+	scale = 1.0;
+	collided = false;
 
 }
 
@@ -105,6 +132,7 @@ void sprite::collision(sprite sprites[], int numSprites, int currIndex, int WIDT
 			{
 				x = rand() % WIDTH;
 				y = rand() % HEIGHT;
+				collided = true;
 			}
 		}
 	}

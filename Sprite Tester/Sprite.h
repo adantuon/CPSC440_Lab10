@@ -8,8 +8,7 @@ public:
 	void drawSprite();
 	int getX(){return x;}
 	int getY(){return y;}
-	void collision(sprite *sprites, int numSprites, int currIndex, int WIDTH, int HEIGHT);
-
+	void collision(sprite sprites[], int numSprites, int currIndex, int WIDTH, int HEIGHT);
 
 private:
 	int x,y;
@@ -19,5 +18,11 @@ private:
 	int xcount,ycount;
 	int curframe,maxframe,animdir;
 	int framecount,framedelay;
-	ALLEGRO_BITMAP *image[9];
+	bool power[4] = { false }; //0 = Spinning, 1 = Scared, 2 = Baby, 3 = Freeze
+	float angle;
+	ALLEGRO_COLOR tint;
+	float scale;
+	int seconds;
+	bool collided;
+	ALLEGRO_BITMAP *image[8];
 };

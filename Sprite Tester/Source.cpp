@@ -9,7 +9,7 @@ int main(void)
 	//variables
 	int width = 640;
 	int height = 480;
-	const int numSprites = 8;
+	const int numSprites = 5;
 	bool done = false;
 
 	bool redraw = true;
