@@ -15,15 +15,11 @@ void sprite::drawSprite()
 
 	//If Scared
 	else if (power[1]) {
-		if (collided) {
-			tint = al_map_rgb(rand() / 256, rand() / 256, rand() / 256);
-			collided = false;
-		}
 		al_draw_tinted_bitmap(image[curframe], tint, x, y, 0);
 	}
 
 	//If Baby
-	else if (power[2]) {
+	else if (power[2] && !dead) {
 		al_draw_scaled_bitmap(image[curframe], 0, 0, 64, 64, x, y, 64 * scale, 64 * scale, 0);
 	}
 
@@ -31,36 +27,33 @@ void sprite::drawSprite()
 	else if (power[3]) {
 		al_draw_bitmap(image[curframe], x, y, 0);
 	}
-
-	//Default Just In Case
-	else {
-		al_draw_bitmap(image[curframe], x, y, 0);
-	}
 }
 
 void sprite::updatesprite()
 {
-	//update x position
-	if (++xcount > xdelay)
-	{
-		xcount = 0;
-		x += xspeed;
-	}
+	if (!dead) {
+		//update x position
+		if (++xcount > xdelay)
+		{
+			xcount = 0;
+			x += xspeed;
+		}
 
-	//update y position
-	if (++ycount > ydelay)
-	{
-		ycount = 0;
-		y += yspeed;
-	}
+		//update y position
+		if (++ycount > ydelay)
+		{
+			ycount = 0;
+			y += yspeed;
+		}
 
 
-	if (framecount++ > framedelay)
-	{
-		framecount = 0;
-		curframe++;
-		if (curframe >= maxframe)
-			curframe = 0;
+		if (framecount++ > framedelay)
+		{
+			framecount = 0;
+			curframe++;
+			if (curframe >= maxframe)
+				curframe = 0;
+		}
 	}
 }
 
@@ -117,7 +110,9 @@ void sprite::load_animated_sprite(int size)
 	power[rand() % 4] = true;
 	angle = 0.0;
 	tint = al_map_rgb(255, 255, 255);
+	dead = false;
 	scale = 1.0;
+	frames = 0;
 	collided = false;
 
 }
@@ -129,16 +124,44 @@ sprite::~sprite()
 }
 
 void sprite::collision(sprite sprites[], int numSprites, int currIndex, int WIDTH, int HEIGHT) {
-	for (int i = 0; i < numSprites; i++) {
-		if (i != currIndex) {
-			if ((x >= sprites[i].getX() - width && x <= sprites[i].getX() + width) &&
-				(y >= sprites[i].getY() - height && y <= sprites[i].getY() + height))
-			{
-				x = rand() % WIDTH;
-				y = rand() % HEIGHT;
-				collided = true;
+	if (!dead) {
+		for (int i = 0; i < numSprites; i++) {
+			if (i != currIndex) {
+				if ((x >= sprites[i].getX() - width && x <= sprites[i].getX() + width) &&
+					(y >= sprites[i].getY() - height && y <= sprites[i].getY() + height))
+				{
+					//If Spinning
+					if (power[0]) {
+
+					}
+
+					//If Scared or Baby
+					else if (power[1] || power[2]) {
+						x = rand() % WIDTH;
+						y = rand() % HEIGHT;
+						if (power[1]) {
+							tint = al_map_rgb(rand() / 256, rand() / 256, rand() / 256);
+						}
+						else {
+							scale /= 2;
+							if ((int)(64 * scale) == 0) {
+								printf("Sprite Died\n");
+								dead = true;
+							}
+						}
+					}
+
+					//If Freeze
+					else if (power[3]) {
+
+					}
+
+					collided = true;
+					return;
+				}
 			}
 		}
+		collided = false;
 	}
 }
 

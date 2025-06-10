@@ -21,8 +21,9 @@ private:
 	bool power[4] = { false }; //0 = Spinning, 1 = Scared, 2 = Baby, 3 = Freeze
 	float angle;
 	ALLEGRO_COLOR tint;
+	bool dead;
 	float scale;
-	int seconds;
+	int frames;
 	bool collided;
 	ALLEGRO_BITMAP *image[8];
 };
