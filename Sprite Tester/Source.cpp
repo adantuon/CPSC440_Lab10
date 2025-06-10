@@ -9,7 +9,7 @@ int main(void)
 	//variables
 	int width = 640;
 	int height = 480;
-	const int numSprites = 10;
+	const int numSprites = 8;
 	bool done = false;
 
 	bool redraw = true;
@@ -47,6 +47,7 @@ int main(void)
 		banana[i].load_animated_sprite(8);
 	}
 	
+	srand(time(NULL));
 
 	while(!done)
 	{
@@ -57,6 +58,10 @@ int main(void)
 		{
 			for (int i = 0; i < numSprites; i++) {
 				banana[i].bouncesprite(width, height);
+			}
+
+			for (int i = 0; i < numSprites; i++) {
+				banana[i].collision(banana, numSprites, i, width, height);
 			}
 
 			redraw = true;
