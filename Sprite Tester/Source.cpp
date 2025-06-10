@@ -42,7 +42,7 @@ int main(void)
 	al_set_target_bitmap(al_get_backbuffer(display));
 	al_start_timer(timer);
 
-	alien.load_animated_sprite(9);
+	alien.load_animated_sprite(8);
 
 	while(!done)
 	{

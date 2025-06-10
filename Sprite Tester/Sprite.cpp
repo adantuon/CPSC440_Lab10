@@ -77,7 +77,7 @@ void sprite::load_animated_sprite(int size)
 	maxframe=size;
 	for (int n=0; n<size; n++)
 	{
-		sprintf_s(s,"Alien%d.bmp",n);
+		sprintf_s(s,"banana%d.png",n);
 		image[n] = al_load_bitmap(s);
 
 		al_convert_mask_to_alpha(image[n], al_map_rgb(255, 255, 255));
