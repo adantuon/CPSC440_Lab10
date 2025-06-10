@@ -10,15 +10,15 @@ using namespace std;
 void sprite::drawSprite()
 {
 	al_draw_tinted_scaled_rotated_bitmap(image[curframe], tint, 32, 32, x, y, scale, scale, angle * 2 * ALLEGRO_PI, 0);
-	al_draw_filled_rectangle(x - width / 2, y - height / 2, x + width / 2, y + height / 2, al_map_rgba(50, 0, 0, 05));
 }
 
 void sprite::updatesprite(int WIDTH, int HEIGHT)
 {
 	if (!dead  && !frozen) {
+		//If collision and power teleports on collision, then teleport
 		if (collided && (power[1] || power[2])) {
-			x = rand() % WIDTH;
-			y = rand() % HEIGHT;
+			x = (rand() % (WIDTH - width + 1)) + width / 2;
+			y = (rand() % (HEIGHT - height + 1)) + height / 2;
 		}
 
 		//update x position
@@ -44,16 +44,20 @@ void sprite::updatesprite(int WIDTH, int HEIGHT)
 				curframe = 0;
 		}
 	}
+	//Increment frames since last collision
 	frames++;
 
+	//If frozen and 5 seconds have passed, unfreeze
 	if (frozen && frames > 300) {
 		frozen = false;
 	}
 
+	//If not dead and currently scaled down and more than 10 seconds have passed since last collision, return to 1x scale
 	if (!dead && scale < 1.0 && frames > 600) {
 		scale = 1.0;
 	}
 
+	//If power would rotate then increment rotate every frame
 	if (power[0]) {
 		angle += 0.01;
 
@@ -112,8 +116,22 @@ void sprite::load_animated_sprite(int size, int WIDTH, int HEIGHT)
 	framedelay = 5;
 	framecount = 0;
 
-	x = rand() % WIDTH;
-	y = rand() % HEIGHT;
+	x = (rand() % (WIDTH - width + 1)) + width / 2;
+	y = (rand() % (HEIGHT - height + 1)) + height / 2;
+
+	if (rand() % 2) {
+		xspeed = rand() % 2 + 4;
+	}
+	else {
+		xspeed = rand() % 2 - 6;
+	}
+
+	if (rand() % 2) {
+		yspeed = rand() % 2 + 4;
+	}
+	else {
+		yspeed = rand() % 2 - 6;
+	}
 
 	power[rand() % 4] = true;
 
@@ -139,8 +157,11 @@ sprite::~sprite()
 
 void sprite::collision(sprite sprites[], int numSprites, int currIndex, int WIDTH, int HEIGHT) {
 	if (!dead && !frozen) {
+
 		for (int i = 0; i < numSprites; i++) {
+
 			if (i != currIndex && !sprites[i].isDead()) {
+
 				if ((x + width / 2 >= sprites[i].getX() - width / 2 && x - width / 2 <= sprites[i].getX() + width / 2) &&
 					(y + height / 2 >= sprites[i].getY() - height / 2 && y - height / 2 <= sprites[i].getY() + height / 2))
 				{
